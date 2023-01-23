@@ -168,6 +168,34 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <TextView
+            android:id="@+id/filteredOrdersTv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:background="@drawable/shapre_rect02"
+            android:padding="10dp"
+            android:text="Showing All Orders"/>
+        <ImageButton
+            android:id="@+id/filterOrderBtn"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="5dp"
+            android:background="@null"
+            android:scaleType="fitXY"
+            android:src="@drawable/ic_dashboard_gray"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/ordersRv"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:reverseLayout="true"
+            tools:listitem="@layout/row_order_seller"
+            app:stackFromEnd="true" />
+
     </RelativeLayout>
 
 </RelativeLayout>

@@ -6,13 +6,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".activities.SplashActivity">
-    
+
     <ImageView
         android:id="@+id/icon1"
         android:layout_width="150dp"
         android:layout_height="150dp"
-        android:src="@drawable/icon"
-        android:layout_centerInParent="true"/>
+        android:layout_centerInParent="true"
+        android:src="@drawable/clothing" />
 
     <TextView
         android:layout_below="@+id/icon1"

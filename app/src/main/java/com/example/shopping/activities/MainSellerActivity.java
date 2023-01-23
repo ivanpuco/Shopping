@@ -19,8 +19,11 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.shopping.adapters.AadapterOrderUser;
+import com.example.shopping.adapters.AdapterOrderShop;
 import com.example.shopping.adapters.AdapterProductSeller;
 import com.example.shopping.models.Constants;
+import com.example.shopping.models.ModelOrderShop;
 import com.example.shopping.models.ModelProduct;
 import com.example.shopping.R;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -39,18 +42,22 @@ import java.util.HashMap;
 
 public class MainSellerActivity extends AppCompatActivity {
 
-    private TextView name2, shopName1, email2, tabProductTv, tabOrderTv, filteredProductsTv;
+    private TextView name2, shopName1, email2, tabProductTv, tabOrderTv, filteredProductsTv,
+    filteredOrdersTv;
     private EditText searchProductEt;
-    private ImageButton logoutBtn, addProductBtn,filterProductBtn;
+    private ImageButton logoutBtn, addProductBtn,filterProductBtn,filterOrderBtn;
     private ImageView profile2;
     private RelativeLayout productsR, ordersR;
-    private RecyclerView productsRv;
+    private RecyclerView productsRv, ordersRv;
 
     private FirebaseAuth firebaseAuth;
     private ProgressDialog progressDialog;
 
     private ArrayList<ModelProduct> productList;
     private AdapterProductSeller adapterProductSeller;
+
+    private ArrayList<ModelOrderShop> orderShopArrayList;
+    private AdapterOrderShop adapterOrderShop;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,6 +80,11 @@ public class MainSellerActivity extends AppCompatActivity {
         productsR=findViewById(R.id.productsR);
         ordersR=findViewById(R.id.ordersR);
 
+        filteredOrdersTv = findViewById(R.id.filteredOrdersTv);
+        filterOrderBtn =findViewById(R.id.filterOrderBtn);
+        ordersRv =findViewById(R.id.ordersRv);
+
+
 
         progressDialog = new ProgressDialog(this);
         progressDialog.setTitle("Please wait");
@@ -82,6 +94,7 @@ public class MainSellerActivity extends AppCompatActivity {
         firebaseAuth = FirebaseAuth.getInstance();
         checkUser();
         loadAllProducts();
+        loadAllOrders();
 
         showProductsUI();
 
@@ -166,6 +179,34 @@ public class MainSellerActivity extends AppCompatActivity {
                         .show();
             }
         });
+    }
+
+    private void loadAllOrders() {
+        orderShopArrayList = new ArrayList<>();
+
+        //get all products
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Users");
+        reference.child(firebaseAuth.getUid()).child("Orders")
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        orderShopArrayList.clear();
+                        for(DataSnapshot ds: snapshot.getChildren()){
+                            ModelOrderShop modelOrderShop = ds.getValue(ModelOrderShop.class);
+                            orderShopArrayList.add(modelOrderShop);
+                        }
+                        //setup adapter
+                        adapterOrderShop=new AdapterOrderShop(MainSellerActivity.this, orderShopArrayList);
+                        ordersRv.setAdapter(adapterOrderShop);
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+
     }
 
     private void loadFilteredProducts(String selected) {
